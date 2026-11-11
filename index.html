@@ -1,0 +1,296 @@
+<!doctype html><html><head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="https://myhub.ia.br/canvas-vendor/tailwind.js"></script>
+    <style>body{margin:0;padding:16px;box-sizing:border-box;font-family:system-ui,sans-serif;}</style>
+    </head><body><style>
+  :root {
+    --rosa: #E0457B;
+    --rosa-escuro: #B92D5E;
+    --rosa-claro: #FCE4EC;
+    --menta: #8ED1BD;
+    --menta-escuro: #3E9A84;
+    --creme: #FFF8EC;
+    --bege: #EBDCA9;
+    --marrom: #6B4226;
+    --texto: #4A3428;
+    --verde-natal: #2F6B4F;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--creme); color: var(--texto); padding-bottom: 180px; }
+  header { background: linear-gradient(135deg, #fff 0%, var(--rosa-claro) 100%); border-bottom: 4px solid var(--rosa); text-align: center; padding: 20px 16px 16px; }
+  .logo { position: relative; width: 200px; height: 200px; margin: 0 auto; border-radius: 50%; overflow: hidden; }
+  .logo img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; }
+  header p.sub { margin: 4px 0 0; color: var(--marrom); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
+  header h1 { margin: 6px 0 0; color: var(--rosa-escuro); font-size: 30px; }
+  nav { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,0.96); border-bottom: 2px solid var(--menta); display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; padding: 12px; }
+  .tab { border: 2px solid var(--rosa); background: #fff; color: var(--rosa-escuro); border-radius: 999px; padding: 8px 18px; font-weight: 700; cursor: pointer; font-size: 14px; }
+  .tab.ativo { background: var(--rosa); color: #fff; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  h2 { color: var(--marrom); font-size: 24px; margin: 8px 0 16px; }
+  .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .card { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 2px 8px rgba(107,66,38,0.1); border-top: 4px solid var(--menta); display: flex; flex-direction: column; }
+  .foto { height: 170px; background: linear-gradient(135deg, var(--bege), var(--rosa-claro)); display: flex; align-items: center; justify-content: center; color: var(--marrom); font-size: 14px; }
+  .foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .corpo { padding: 14px; display: flex; flex-direction: column; flex: 1; }
+  .corpo h3 { margin: 0; font-size: 16px; color: var(--marrom); line-height: 1.3; }
+  .corpo p { margin: 6px 0 0; font-size: 13px; color: #6c574b; flex: 1; }
+  .linha { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+  .preco { font-size: 18px; font-weight: 800; color: var(--verde-natal); }
+  .qtd { display: flex; align-items: center; gap: 8px; }
+  .qtd button { width: 32px; height: 32px; border-radius: 50%; border: none; font-weight: 800; font-size: 18px; cursor: pointer; color: #fff; }
+  .menos { background: var(--rosa); }
+  .mais { background: var(--menta-escuro); }
+  .qtd span { min-width: 22px; text-align: center; font-weight: 700; }
+  .barra { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 3px solid var(--rosa); box-shadow: 0 -4px 14px rgba(0,0,0,0.08); z-index: 20; }
+  .barra-linha { max-width: 1100px; margin: 0 auto; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .barra small { color: var(--marrom); }
+  .barra .total { font-size: 20px; font-weight: 800; color: var(--verde-natal); margin: 0; }
+  .btn-ver { background: var(--marrom); color: #fff; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+  .btn-ver:disabled { opacity: 0.5; cursor: not-allowed; }
+  .painel { display: none; border-top: 1px solid var(--menta); max-height: 60vh; overflow-y: auto; background: var(--creme); }
+  .painel.aberto { display: block; }
+  .painel-inner { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  .painel h3 { margin: 0 0 8px; color: var(--rosa-escuro); }
+  #lista { list-style: none; padding: 0; margin: 0; }
+  #lista li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--bege); font-size: 14px; }
+  .campos { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; margin-top: 16px; }
+  .campos label { font-size: 13px; font-weight: 700; color: var(--marrom); display: flex; flex-direction: column; gap: 4px; }
+  .campos input { padding: 10px; border: 2px solid var(--menta); border-radius: 10px; font-size: 15px; background: #fff; }
+  .campos input:focus { outline: none; border-color: var(--rosa); }
+  .enviar { display: block; margin-top: 16px; text-align: center; background: #25D366; color: #fff; text-decoration: none; font-weight: 800; padding: 14px; border-radius: 12px; font-size: 16px; }
+  .enviar.bloqueado { opacity: 0.5; pointer-events: none; }
+  .aviso { color: var(--rosa-escuro); font-size: 13px; margin: 8px 0 0; min-height: 16px; text-align: center; }
+  footer { text-align: center; color: var(--marrom); font-size: 13px; padding: 20px; }
+  @media (max-width: 560px) { .campos { grid-template-columns: 1fr; } .logo { width: 170px; height: 170px; } }
+</style>
+
+<header>
+  <div class="logo"><img src="https://d31zra5bs5df64.cloudfront.net/prod/3F2zAAtKbcKWNYSQtm8QyKRYL1r/chat/3LvOrH9CcHOwN1egq8JQfErEEZR/3Lw9UBlBDC0Cv11Viz70X9GtWRY.jpg?Expires=1794358583&Key-Pair-Id=K2FT0I8VPJSP5H&Signature=a~ifbdQcMUEDOh6LC7NCR48GTp7KNDdVp8BLO63b8n~6sDnPfbnLXdzAye4VypCIyDihuq6~C8H-tfqyLC2S9oAkBy3aaO9~32aiFcdOQHeVlsk8KulC60FX-7tbQJ9uJH~t~0dUgGFeIuYuGyX7YTLD484duXHKt-fKjRaC~g53OmFPdTZWtmaEFqtrU3mSXxkmRKuE-R4Tx~DWjYSGIxxzcI81nIRqFJL7Rf-yH92hGfEMFLvAndl9gigys4TGq5-i3T5lNKrYk9D9Y3wBNuBcRtRHiEhAQhyvZyeIBqCxtABhaf~UbVdrM01SLmP~ksxXVKx-GwC8A3oubTG27w__" alt="Logo Chef Ana Aguilera"></div>
+  <p class="sub">Edição Especial</p>
+  <h1>Cardápio de Natal</h1>
+</header>
+
+<nav>
+  <button class="tab" data-tab="salgados">Salgados</button>
+  <button class="tab" data-tab="doces">Doces</button>
+  <button class="tab" data-tab="biscoitos">Biscoitos</button>
+</nav>
+
+<main>
+  <h2 id="titulo-categoria"></h2>
+  <div id="grid" class="grid"></div>
+</main>
+
+<div class="barra">
+  <div class="barra-linha">
+    <div>
+      <small><span id="qtd-total">0</span> item(ns) no pedido</small>
+      <p class="total" id="total">R$ 0,00</p>
+    </div>
+    <button id="toggle" class="btn-ver" disabled>Ver pedido</button>
+  </div>
+  <div id="painel" class="painel">
+    <div class="painel-inner">
+      <h3>Seu pedido</h3>
+      <ul id="lista"></ul>
+      <div style="display:flex;justify-content:space-between;margin-top:10px;font-weight:800;color:var(--verde-natal);">
+        <span>Total</span><span id="total-painel">R$ 0,00</span>
+      </div>
+
+      <div class="campos">
+        <label>Seu nome
+          <input id="nome" type="text" placeholder="Ex.: Maria Silva" autocomplete="name">
+        </label>
+        <label>Seu telefone (com DDD)
+          <input id="tel" type="tel" placeholder="Ex.: (11) 99999-9999" autocomplete="tel">
+        </label>
+      </div>
+
+      <a id="enviar" class="enviar bloqueado" target="_blank" rel="noopener">Enviar pedido pelo WhatsApp</a>
+      <p id="aviso" class="aviso"></p>
+    </div>
+  </div>
+</div>
+
+<footer>Chef Ana Aguilera · Pedidos pelo WhatsApp</footer>
+
+<script>
+const WHATSAPP = "5511966230856";
+
+const produtos = [
+  { id: 1, cat: "salgados", nome: "Empadão Natalino - Pera com Gorgonzola", desc: "Pera delicadamente combinada com queijo gorgonzola, mel e nozes.", preco: 120 },
+  { id: 2, cat: "salgados", nome: "Empadão Natalino - Camarão", desc: "Recheio cremoso e generoso de camarões.", preco: 120 },
+  { id: 3, cat: "salgados", nome: "Empadão Natalino - Pernil", desc: "Suculência do pernil, alho-poró levemente adocicado e o perfume especial do tomilho.", preco: 120 },
+  { id: 4, cat: "salgados", nome: "Cesta de Pães", desc: "2 baguetes, 2 pães francês e 1 pão italiano. Perfeitos para acompanhar os patês.", preco: 100 },
+  { id: 5, cat: "salgados", nome: "Homus (100g)", desc: "Patê de grão-de-bico, clássico e cremoso.", preco: 20 },
+  { id: 6, cat: "salgados", nome: "Patê de Azeitonas Pretas (100g)", desc: "Patê intenso e saboroso de azeitonas pretas.", preco: 20 },
+
+  { id: 7, cat: "doces", nome: "Rocambole Magia Tropical", desc: "Cocada cremosa e abacaxi.", preco: 100 },
+  { id: 8, cat: "doces", nome: "Rocambole Delícia Natalina", desc: "Maçã, canela e doce de leite.", preco: 100 },
+  { id: 9, cat: "doces", nome: "Rocambole Red Velvet Natalino", desc: "Brigadeiro cremoso de chocolate branco e morangos.", preco: 100 },
+  { id: 10, cat: "doces", nome: "Torta de Limão", desc: "Torta doce de limão.", preco: 120 },
+  { id: 19, cat: "doces", nome: "Torta de Morango", desc: "Torta doce com morangos frescos.", preco: 120 },
+  { id: 11, cat: "doces", nome: "Torta Banoffee", desc: "Banana, caramelo e creme.", preco: 140 },
+  { id: 12, cat: "doces", nome: "Torta de Pêssego", desc: "Torta doce de pêssego.", preco: 140 },
+  { id: 20, cat: "doces", nome: "Torta de Damasco", desc: "Torta doce de damasco.", preco: 140 },
+  { id: 13, cat: "doces", nome: "Bolo Natal Dourado", desc: "Massa branca aromatizada de laranja, brigadeiro de laranja, ganache de chocolate, brigadeiro meio amargo e cobertura de chantininho com decoração Papai Noel.", preco: 250 },
+  { id: 14, cat: "doces", nome: "Panetone Belive", desc: "Clássico natalino da marca Belive.", preco: 65 },
+  { id: 15, cat: "doces", nome: "Chocotone Belive", desc: "Panetone com gotas de chocolate.", preco: 65 },
+
+  { id: 16, cat: "biscoitos", nome: "Gingerbread", desc: "Biscoito artesanal com especiarias natalinas. Embalagem de 125g.", preco: 35 },
+  { id: 17, cat: "biscoitos", nome: "Laranja com Chocolate", desc: "Combinação aromática e delicada. Embalagem de 125g.", preco: 35 },
+  { id: 18, cat: "biscoitos", nome: "Cookies de Chocolate", desc: "Biscoito artesanal de chocolate. Embalagem de 125g.", preco: 35 }
+];
+
+const fotos = {
+  1: "empadao.jpeg",
+  2: "empadao.jpeg",
+  3: "empadao.jpeg",
+  4: "cesta paes .jpeg",
+  5: "pate homus.jpg",
+  6: "pate de azeitona.avif",
+  7: "rocambole cocada .png",
+  8: "watermarked_img_13064339660369854782.jpg",
+  9: "rocambole red velvet .jpeg",
+  10: "torta limão .jpeg",
+  11: "torta banoffe .jpeg",
+  12: "pessego.jpeg",
+  13: "bolo natal.jpeg",
+  17: "biscoito laranja .jpeg",
+  18: "cookie.jpeg",
+  19: "torta morango .jpg",
+  20: "torta damasco.jpeg",
+  14: "panetone.jpeg",
+  15: "chocotone.jpeg"
+};
+
+const nomesCat = { salgados: "Salgados", doces: "Doces", biscoitos: "Biscoitos Artesanais" };
+let catAtual = "salgados";
+const quantidades = {};
+
+const brl = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+function renderTabs() {
+  document.querySelectorAll(".tab").forEach(b => {
+    b.classList.toggle("ativo", b.dataset.tab === catAtual);
+  });
+}
+
+function renderGrid() {
+  document.getElementById("titulo-categoria").textContent = nomesCat[catAtual];
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  produtos.filter(p => p.cat === catAtual).forEach(p => {
+    const q = quantidades[p.id] || 0;
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      ${fotos[p.id] ? `<div class="foto"><img src="canvas-asset:${encodeURI(fotos[p.id])}" alt="${p.nome}"></div>` : `<div class="foto">Foto em breve</div>`}
+      <div class="corpo">
+        <h3>${p.nome}</h3>
+        <p>${p.desc}</p>
+        <div class="linha">
+          <span class="preco">${brl(p.preco)}</span>
+          <div class="qtd">
+            <button class="menos" data-id="${p.id}" data-op="-1">−</button>
+            <span>${q}</span>
+            <button class="mais" data-id="${p.id}" data-op="1">+</button>
+          </div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function itensDoPedido() {
+  return produtos.filter(p => (quantidades[p.id] || 0) > 0);
+}
+
+function atualizarResumo() {
+  const itens = itensDoPedido();
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+  let qtdTotal = 0, valorTotal = 0;
+  itens.forEach(p => {
+    const q = quantidades[p.id];
+    qtdTotal += q;
+    valorTotal += q * p.preco;
+    const li = document.createElement("li");
+    li.innerHTML = `<span>${q}x ${p.nome}</span><span>${brl(q * p.preco)}</span>`;
+    lista.appendChild(li);
+  });
+  if (qtdTotal === 0) {
+    lista.innerHTML = `<li><span>Nenhum item adicionado.</span></li>`;
+  }
+  document.getElementById("qtd-total").textContent = qtdTotal;
+  document.getElementById("total").textContent = brl(valorTotal);
+  document.getElementById("total-painel").textContent = brl(valorTotal);
+  document.getElementById("toggle").disabled = qtdTotal === 0;
+  atualizarLinkWhatsapp(valorTotal);
+}
+
+function montarMensagem(valorTotal) {
+  const nome = document.getElementById("nome").value.trim();
+  const tel = document.getElementById("tel").value.trim();
+  let msg = "*Novo pedido - Cardápio de Natal (Chef Ana Aguilera)*\n\n";
+  msg += "*Itens do pedido:*\n";
+  itensDoPedido().forEach(p => {
+    const q = quantidades[p.id];
+    msg += `- ${q}x ${p.nome} (${brl(q * p.preco)})\n`;
+  });
+  msg += `\n*Total:* ${brl(valorTotal)}\n`;
+  msg += `*Nome:* ${nome}\n`;
+  msg += `*Telefone:* ${tel}`;
+  return msg;
+}
+
+function atualizarLinkWhatsapp(valorTotal) {
+  const link = document.getElementById("enviar");
+  const aviso = document.getElementById("aviso");
+  const nome = document.getElementById("nome").value.trim();
+  const telDigitos = document.getElementById("tel").value.replace(/\D/g, "");
+  const temItens = itensDoPedido().length > 0;
+  const dadosOk = nome.length > 0 && telDigitos.length >= 10;
+
+  if (temItens && dadosOk) {
+    link.href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(montarMensagem(valorTotal));
+    link.classList.remove("bloqueado");
+    aviso.textContent = "";
+  } else {
+    link.removeAttribute("href");
+    link.classList.add("bloqueado");
+    aviso.textContent = !temItens
+      ? "Adicione itens ao pedido para enviar."
+      : "Preencha seu nome e telefone com DDD para enviar.";
+  }
+}
+
+document.querySelectorAll(".tab").forEach(b => {
+  b.addEventListener("click", () => {
+    catAtual = b.dataset.tab;
+    renderTabs();
+    renderGrid();
+  });
+});
+
+document.getElementById("grid").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-id]");
+  if (!btn) return;
+  const id = Number(btn.dataset.id);
+  quantidades[id] = Math.max(0, (quantidades[id] || 0) + Number(btn.dataset.op));
+  renderGrid();
+  atualizarResumo();
+});
+
+document.getElementById("toggle").addEventListener("click", () => {
+  document.getElementById("painel").classList.toggle("aberto");
+});
+
+["nome", "tel"].forEach(id => {
+  document.getElementById(id).addEventListener("input", () => atualizarResumo());
+});
+
+renderTabs();
+renderGrid();
+atualizarResumo();
+</script></body></html>
